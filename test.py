@@ -11,7 +11,7 @@ from mediapipe.tasks.python import vision
 # CONFIG
 # =========================
 MODEL_PATH = "hand_landmarker.task"
-CSV_PATH = "asl_landmarks.csv"
+CSV_PATH = "asl_landmarks_sara.csv"
 SAMPLES_PER_LETTER = 40
 CAMERA_INDEX = 0
 
