@@ -1,11 +1,11 @@
-import cv2
-import numpy as np
-import joblib
-import textwrap
-import time
-import os
+import cv2 #used for webcam capture
+import numpy as np #numerical operations
+import joblib #loads trained model
+import textwrap #wraps long sentence text nicely
+import time #time for hold, cooldown, and spaces
+import os #checks if files exist
 
-import mediapipe as mp
+import mediapipe as mp #detects the hand and gives landmark coordinates
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
