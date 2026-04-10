@@ -13,21 +13,9 @@ import model
 import joblib 
 
 
-import cv2
-import csv
-import os
-import time
-import mediapipe as mp
-import numpy as np
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 
-# MUST match your working recognizer
-from landmarks import normalize_landmarks 
 
-# =========================
-# CONFIGURATION
-# =========================
+
 MODEL_PATH      = "hand_landmarker.task"
 CSV_PATH        = "asl_landmarks_automated.csv"
 CADENCE_SECONDS = 2
