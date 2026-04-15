@@ -11,7 +11,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 import model
 import joblib 
-
+from preprocess import DataHandling, apply_data_handling
 
 
 
@@ -111,25 +111,31 @@ def run_model(csv, rf):
     X = df.drop(columns = ['label'])
     print(df.columns)
     print('hi')
-    return model.test_model(rf, X)
+    return model.test_model(rf, X.values)
 
 def clear_file(csv):
     with open(csv, "w") as f:
             pass
      
+def apply_data(file, model, name):
+    user_data = apply_data_handling(file, name)
+    rf = joblib.load(model)
+    ans = run_model(f"revised_asl_{name}.csv", rf)
+    print(ans)
+
 
 if __name__ == "__main__":
     if os.stat("asl_landmarks_automated.csv").st_size == 0:
         run_hand_tracker()
-        df = pd.read_csv("asl_landmarks_automated.csv")
+        #df = apply_data("asl_landmarks_automated.csv","rf_model.pkl", "user_auto")
         rf = joblib.load("rf_model.pkl")
-        ans = run_model("asl_landmarks_automated.csv", rf)
+        ans = run_model("revised_asl_user_auto.csv", rf)
         print(ans)
         clear_file("asl_landmarks_automated.csv")
     else:
-        df = pd.read_csv("asl_landmarks_automated.csv")
+        #df = apply_data("asl_landmarks_automated.csv","rf_model.pkl", "user_auto")
         rf = joblib.load("rf_model.pkl")
-        ans = run_model("asl_landmarks_automated.csv", rf)
+        ans = run_model("revised_asl_user_auto.csv", rf)
         print(ans)
         clear_file("asl_landmarks_automated.csv")
 

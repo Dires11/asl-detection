@@ -7,11 +7,15 @@ import joblib
 import numpy as np
 
 
+class Data Preprocessor:
+    def __init__(self):
+        
+
 
 def load_data():
-    file_path_1 = 'asl_landmarks_sara.csv' # Replace with your actual file path
-    file_path_2 = 'asl_landmarks_davit.csv'
-    file_path_3 = 'asl_landmarks_arthur.csv'
+    file_path_1 = 'revised_asl_sara.csv' # Replace with your actual file path
+    file_path_2 = 'revised_asl_davit.csv'
+    file_path_3 = 'revised_asl_arthur.csv'
 
     df1 = pd.read_csv(file_path_1)
     df2 = pd.read_csv(file_path_2)
