@@ -89,7 +89,7 @@ def run_hand_tracker():
                             writer = csv.writer(f)
                             writer.writerow([LABEL_NAME] + list(vec))
                         
-                        os.system('say "Logged" &')
+                        #os.system('say "Logged" &')
                         print(f"Logged Normalized '{LABEL_NAME}'")
                         last_capture_time = now
 
