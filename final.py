@@ -172,7 +172,6 @@ def run_hand_tracker():
             cv2.imshow("ASL Prediction", frame)
 
             if cv2.waitKey(1) & 0xFF == ord('d'):
-                # Create a black image and put text on it
                 info_window = np.zeros((200, 400, 3), dtype="uint8")
                 pred = predictions.pop(0)
                 
@@ -185,7 +184,6 @@ def run_hand_tracker():
                 predictions = []
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
-                info_window = np.zeros((200, 400, 3), dtype="uint8")
                 os.system('say "Thanks for using our platform, Goodbye!" &')
                 print('DONE')
                 break

@@ -251,7 +251,7 @@ with vision.HandLandmarker.create_from_options(options) as landmarker:
         # Build composite frame: panel (left) + camera (right)
         canvas = np.zeros((h, PANEL_W + w, 3), dtype=np.uint8)
         canvas[:, PANEL_W:] = frame
-
+q
         panel = canvas[:, :PANEL_W]
         draw_panel(panel, pred_letter, confidence, state, sentence, hold_frac)
 

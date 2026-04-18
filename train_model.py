@@ -10,14 +10,13 @@ from sklearn.metrics import classification_report, confusion_matrix
 from landmarks import normalize_landmarks
 
 
-# =========================
-# LOAD & CLEAN CSVs
-# =========================
+# load dataset
 arthur = pd.read_csv("asl_landmarks_arthur.csv")
 sara   = pd.read_csv("asl_landmarks_sara.csv")
 davit  = pd.read_csv("asl_landmarks_davit.csv")
 
 df = pd.concat([arthur, sara, davit], ignore_index=True)
+
 
 assert df.isnull().sum().sum() == 0, "NaN values found in combined data"
 assert df.shape[1] == 64, f"Expected 64 columns, got {df.shape[1]}"
@@ -26,9 +25,7 @@ print(f"Labels: {sorted(df['label'].unique())} ({df['label'].nunique()} unique)"
 assert df['label'].nunique() == 24, f"Expected 24 labels, got {df['label'].nunique()}"
 
 
-# =========================
 # BUILD FEATURES
-# =========================
 coord_cols = [c for c in df.columns if c != "label"]
 raw_coords = df[coord_cols].values.reshape(-1, 21, 3)
 
@@ -45,14 +42,12 @@ y = np.array(labels)
 print(f"Feature matrix: {X.shape}  (expected ~{len(df)} x 84)")
 
 
-# =========================
 # TRAIN
-# =========================
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# Augment training set with jittered copies (test set is never touched)
+# Augment training set with jittered copies to improve accuracy
 AUGMENT_COPIES = 4      # each sample gets 4 noisy copies
 JITTER_STD     = 0.015  # ~1.5% of the normalised scale
 
@@ -73,9 +68,7 @@ rf = RandomForestClassifier(
 rf.fit(X_train_final, y_train_final)
 
 
-# =========================
-# EVALUATE
-# =========================
+# EVALUATE Model
 y_pred = rf.predict(X_test)
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
@@ -105,8 +98,7 @@ plt.savefig("confusion_matrix.png", dpi=150)
 print("Saved confusion_matrix.png")
 
 
-# =========================
-# SAVE MODEL
-# =========================
+
+# SAVE model
 joblib.dump(rf, "asl_model.pkl")
 print("Saved asl_model.pkl")

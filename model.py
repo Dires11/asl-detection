@@ -25,8 +25,7 @@ def load_data():
     print(len(df))
 
     return df
-
-def split_data(df):
+def normalize(df):
     coord_cols = [c for c in df.columns if c != "label"]
     raw_coords = df[coord_cols].values.reshape(-1, 21, 3)
 
@@ -42,8 +41,10 @@ def split_data(df):
     y = np.array(labels)
     print(f"Feature matrix: {X.shape}  (expected ~{len(df)} x 84)")
 
+    return X, y
 
 
+def split_data(df, X, y):
     X_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
@@ -86,7 +87,8 @@ def eval(y_test,y_pred):
 
 if __name__ == "__main__":
     df = load_data()
-    X_train,X_test,y_train, y_test = split_data(df)
+    X,y = normalize(df)
+    X_train,X_test,y_train, y_test = split_data(df, X,y)
     model = train_model(X_train,y_train)
     y_pred = test_model(model, X_test)
     eval(y_pred,y_test)
