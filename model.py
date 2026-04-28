@@ -91,4 +91,4 @@ if __name__ == "__main__":
     X_train,X_test,y_train, y_test = split_data(df, X,y)
     model = train_model(X_train,y_train)
     y_pred = test_model(model, X_test)
-    eval(y_pred,y_test)
+    eval(y_test,y_pred)

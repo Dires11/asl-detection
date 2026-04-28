@@ -8,15 +8,19 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from landmarks import normalize_landmarks
 import requests
+import subprocess
 from groq import Groq
+from dotenv import load_dotenv
+
 
 
 MODEL_PATH = "hand_landmarker.task"
 RF_MODEL_PATH = "asl_model.pkl"
 CAMERA_INDEX = 0
+API_KEY = os.getenv('GROQ_API_KEY')
 
 # Rate Photos are taken of the vectors
-CADENCE_SECONDS = 4
+CADENCE_SECONDS = 3
 
 CONNECTIONS = [
     (0, 1), (1, 2), (2, 3), (3, 4),
@@ -28,12 +32,24 @@ CONNECTIONS = [
 ]
 
 def sentence_format(letters):
-    client = Groq(api_key='Insert-api-key')
-    query = f"Using the string {letters}, apply the necessary spaces to form the sentence. Only respond with the sentence."
+    sentence = ""
+    system_prompt = '''You are an English interpretation assistant that helps non-native English speakers by correcting their spelling. When a user inputs a word or sentence with spelling mistakes, your job is to interpret it into the most commonly used and natural English word or phrase.
+    Rules you must follow:
+
+    First, determine whether the input letters together infer a real life expression, phrase, or sentence that a native English speaker would commonly use.
+    If the input does represent a real life expression, phrase, or sentence, you may freely adjust the number of letters, alter letters, add or remove letters as needed to produce the most natural and correct version of that expression.
+    If the input does not represent a real life expression, phrase, or sentence, the total number of letters in your interpretation must remain exactly the same as the input. You may still alter, rearrange, reassign, or regroup individual letters — but cannot add or remove any.
+    Spaces do not count as letters in either case.
+    Always choose the interpretation that produces the most popular, most natural, and most commonly spoken English phrase or word.
+    If multiple interpretations are possible, always select the one that a native English speaker would most likely say in everyday life.
+    Prioritize grammar, spelling, and natural flow in all interpretations.
+    Return only the interpretation. Do not explain, justify, or add any extra text.
+    '''
+    client = Groq(api_key=API_KEY)
     try:
         completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": query}],
-            model="llama-3.3-70b-versatile",
+            messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": letters}],
+            model="openai/gpt-oss-120b",
         )
         sentence = completion.choices[0].message.content
     except Exception as e:
@@ -118,12 +134,10 @@ def run_hand_tracker():
                         2
                     )
                     
-
                     if now - last_capture_time >= CADENCE_SECONDS:
                         predictions.append(pred_letter)
                         print(f"Stored: {pred_letter}")
-                    
-
+        
                         last_capture_time = now
                     
                 else:
@@ -173,9 +187,8 @@ def run_hand_tracker():
 
             if cv2.waitKey(1) & 0xFF == ord('d'):
                 info_window = np.zeros((200, 400, 3), dtype="uint8")
-                pred = predictions.pop(0)
                 
-                letters = "".join(pred)
+                letters = "".join(predictions)
                 sentence = sentence_format(letters)
                 cv2.putText(info_window, f"{sentence}!", (50, 100), 
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
